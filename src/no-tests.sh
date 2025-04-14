@@ -13,10 +13,14 @@ set -Eeuo pipefail
 # -maxdepth 1 no recursive search
 # -typ d only dirs
 
-len=$(find -maxdepth 1 -type d -not -path './.*' | wc -l)
-if [ $len -gt 1 ] ; then
-   # no dirs, nothing to do
-   exit
+if [ ! -f no-tests.regex ] ; then
+	echo "no-tests.regex not found"
+	exit 1
+fi
+
+if [ $(cat no-tests.regex | wc -w) -eq 0 ] ; then
+	# no-tests is empty no need to continue
+	exit 0
 fi
 
 if [ -z "${GITHUB_WORKSPACE:-}" ] ; then
