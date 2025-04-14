@@ -8,8 +8,12 @@ set -Eeuo pipefail
 # elsewhere (local, project)
 
 # hide all not testable addons
+
+# -not -path './*.' remove dots files
+# -maxdepth 1 no recursive search
+# -typ d only dirs
 if [ -z "${GITHUB_WORKSPACE:-}" ] ; then
-	ls -d */ -d .*/ | grep --invert-match -f no-tests.regex | git sparse-checkout set --stdin
+	find -maxdepth 1 -type d -not -path './.*' | grep --invert-match -f no-tests.regex | git sparse-checkout set --stdin
 else
-	ls -d */ -d .*/ | grep -f no-tests.regex | xargs rm -rf
+	find -maxdepth 1 -type d -not -path './.*' | grep -f no-tests.regex | xargs rm -rf
 fi
