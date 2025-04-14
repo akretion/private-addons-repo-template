@@ -12,6 +12,13 @@ set -Eeuo pipefail
 # -not -path './*.' remove dots files
 # -maxdepth 1 no recursive search
 # -typ d only dirs
+
+len=$(find -maxdepth 1 -type d -not -path './.*' | wc -l)
+if [ $len -gt 1 ] ; then
+   # no dirs, nothing to do
+   exit
+fi
+
 if [ -z "${GITHUB_WORKSPACE:-}" ] ; then
 	find -maxdepth 1 -type d -not -path './.*' | grep --invert-match -f no-tests.regex | git sparse-checkout set --stdin
 else
